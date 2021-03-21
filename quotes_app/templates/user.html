@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>All Quotes Page</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1>{{user.first_name}}'s Quotes</h1>
+        <a href="/quotes">Back</a>
+        <form action="/logout" method="POST">
+            {% csrf_token %}
+            <button type='submit' class="btn btn-danger px-4 float-right">LOGOUT</button>
+        </form><br><br>
+        <div class="row">
+            <div class="col-sm-6">
+                {% for quote in quotes %}
+                <div class="border border-primary">
+                    <h5>{{quote.author}}:</h5>
+                    <p>"{{quote.quote}}"</p>
+                    {% if quote in current_user.uploader.all %}
+                    <a href="/delete_quote/{{quote.id}}" class="link-danger">Delete</a>
+                    {% endif %}
+                </div><br>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

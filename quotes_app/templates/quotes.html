@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>All Quotes Page</title>
+</head>
+
+<body>
+    <div class="container">
+
+        <h1>Welcome {{user.first_name}}!</h1>
+        <a href="/edit/{{user.id}}">Edit My Account</a>
+        <form action="/logout" method="POST">
+            {% csrf_token %}
+            <button type='submit' class="btn btn-danger px-4 float-right">LOGOUT</button>
+        </form><br><br>
+        <div class="row">
+            <div class="col-sm-6">
+                <h3>All Quotes</h3>
+                {% for quote in quotes %}
+                <div class="border border-primary">
+                    <h5>{{quote.author}}:</h5>
+                    <p>"{{quote.quote}}"</p>
+                    <p>Posted by <a href="/user/{{quote.uploaded_by.id}}">{{quote.uploaded_by.first_name}}
+                            {{quote.uploaded_by.last_name}}</a></p>
+                    <P>{{quote.liked_by.all.count}} people like this Quote
+                    <form action="/like_quote/{{quote.id}}" method="POST">
+                        {% csrf_token %}
+                        <button type='submit' class="btn btn-primary btn-sm px-4 ">Like!</button>
+                    </form>
+                    {% if quote in user.uploader.all %}
+                    <a href="/delete_quote/{{quote.id}}" class="link-danger">Delete</a>
+                    {% endif %}
+                </div><br>
+                {% endfor %}
+            </div>
+            <div class="col-sm-6">
+                <h3>Add a Quote</h3>
+                {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                <form action="add_quote" method="POST">
+                    {% csrf_token %}
+                    <label for="author">Author</label>
+                    <input type="text" class="form-control" name='author'>
+                    <label for="quote">Quote</label>
+                    <input type="text" class="form-control" name="quote"><br>
+                    <button type="submit" class="btn btn-primary px-4 float-right">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
